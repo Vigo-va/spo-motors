@@ -1,0 +1,47 @@
+.brandCard {
+  text-align: center;
+  padding: $freeSpace*3 0;
+  margin: $freeSpace*5 $freeSpace * 2;
+  border: 1px inset $borderColor;
+  border-radius: 25%;
+  -webkit-box-shadow: 0 1px 17px -8px rgba(43,29,43,1);
+  -moz-box-shadow: 0 1px 17px -8px rgba(43,29,43,1);
+  box-shadow: 0 1px 17px -8px rgba(43,29,43,1);
+
+    &:hover {
+      .brandTitle {
+        visibility: visible;
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
+
+  .brandTitle {
+    //display: none;
+    padding: 25% 0;
+    margin: $freeSpace*5 $freeSpace * 4;
+    border-radius: 25%;
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(16, 48, 62, 0.72);
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s, visibility .2s;
+  }
+
+  .brandImg {
+    max-width: 200px;
+    height: 150px;
+    object-fit: cover;
+  }
+}

@@ -1,0 +1,22 @@
+@import "~bootstrap/scss/bootstrap";
+@import "styles/variables";
+@import "styles/carousel";
+@import "styles/header";
+@import "styles/brand";
+@import "styles/catalogPage";
+@import "styles/banner";
+@import "styles/item";
+@import "styles/contactsPage";
+@import "styles/footer";
+@import "styles/adminPage";
+
+body {
+  color: $txtColor;
+}
+
+.inputLabel {
+  color: white;
+  background-color: black;
+  width: 90px;
+  text-align: center;
+}

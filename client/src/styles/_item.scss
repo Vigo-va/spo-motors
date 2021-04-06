@@ -1,0 +1,59 @@
+.item {
+  margin-top: $freeSpace*2;
+  p {
+    line-height: $freeSpace*2;
+  }
+  .itemImages {
+    max-height: 100%;
+    max-width: 100%;
+    border-top-left-radius: 10px ;
+    border-top-right-radius: 10px ;
+    @media (min-width: 544px) {
+
+    }
+  }
+  .delete {
+    position: absolute;
+    top: 0;
+    right: 10%;
+    z-index: 100;
+    color: gray;
+    background: none;
+    border: none;
+  }
+  .itemDescriptionBlock {
+    border: 1px solid $borderColor;
+    border-top: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: $freeSpace;
+
+    .itemTitle {
+      font-size: 18px;
+      font-weight: 600;
+      padding-bottom: $freeSpace;
+      border-bottom: 1px solid $borderColor;
+    }
+
+    .itemDescription {
+      font-size: 14px;
+      font-weight: 400;
+      color: gray;
+    }
+
+    .itemPrice {
+      font-size: 14px;
+      font-weight: 400;
+      padding-bottom: $freeSpace;
+
+      border-bottom: 1px solid $borderColor ;
+    }
+
+    .itemArticle {
+      font-size: 14px;
+      font-weight: 400;
+      color: gray;
+    }
+  }
+
+}

@@ -1,0 +1,42 @@
+.banner {
+  display: flex;
+  padding: 15px 10px 0 10px;
+  max-height: 100px;
+  background-color: $bgColor;
+
+  .bannerTitle {
+    text-align: end;
+    padding-top: $freeSpace;
+    font-size: 18px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    @media (max-width: 768px) {
+      text-align: center;
+    }
+  }
+  .bannerInputSection {
+
+
+
+    .form-control {
+      &:hover, &:active, &:focus {
+        border-color: $borderColor;
+        box-shadow: none !important;
+      }
+    }
+
+    .bannerBtn {
+      color: white;
+      background-color: black ;
+      &:hover, &:active, &:focus {
+        border-color: $borderColor;
+        box-shadow: none !important;
+      }
+    }
+    @media(max-width: 768px) {
+      text-align: center;
+    }
+  }
+
+}

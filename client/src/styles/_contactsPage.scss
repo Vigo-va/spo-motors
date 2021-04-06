@@ -1,0 +1,23 @@
+.formBlock {
+
+  margin-top: $freeSpace*2;
+  background-color: $bgColor;
+  padding: $freeSpace*2;
+
+  .form {
+    input {
+      color: #96999c;
+    }
+    textarea {
+      color: #96999c;
+    }
+  }
+  .formBtn {
+    background-color: black;
+    color: white;
+  }
+
+  .formTitle {
+    text-align: center;
+  }
+}

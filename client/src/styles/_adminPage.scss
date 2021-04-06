@@ -1,0 +1,33 @@
+.controlPanel {
+  padding: 25px;
+  text-align: center;
+
+  .controlPanelBtn {
+    margin: 0 20px;
+    color: white;
+    background-color: black;
+
+  }
+}
+.brandsRedactor {
+  margin: $freeSpace*2 0;
+  text-align: center;
+
+  .brandsRedactorTitle {
+    color: white;
+    background-color: black;
+  }
+
+  .brandsRedactorBtn {
+    color: white;
+    background-color: black;
+  }
+}
+
+.brandsRedactorItem {
+  margin: $freeSpace;
+  padding: $freeSpace *2;
+  text-align: center;
+  border: 1px solid $borderColor;
+  border-radius: 10px;
+}

@@ -1,0 +1,18 @@
+.brandItem {
+  @media (max-width: 1199px) {
+    display: none;
+  }
+}
+
+.carsSelect {
+  @media (max-width: 1199px) {
+    display: block;
+  }
+  @media (min-width: 1199px) {
+    display: none;
+  }
+}
+
+.catalogFilter {
+  padding: $freeSpace*2;
+}
