@@ -8,7 +8,7 @@ import { ItemRedactor } from './ItemRedactor';
 export const ControlPanelToggle = (props) => {
   const brands = props.brands.map((brand) => {
     return (
-      <Col md={2} key={brand.key} className={'brandsRedactorItem'}>
+      <Col md={2} key={brand._id} className={'brandsRedactorItem'}>
         <p> {brand.name || 'Название бренда'} </p>
         <Button variant={'link'} value={brand._id} onClick={props.deleteBrand}>
           Удалить
@@ -54,8 +54,11 @@ export const ControlPanelToggle = (props) => {
         description={item.description}
         price={item.price}
         article={item.article}
+        modelName={item.modelName}
+        brandName={item.brandName}
         id={item._id}
         isAdmin={true}
+        itemModalShow={props.itemModalShow}
         itemDelete={props.itemDelete}
       />
     );
@@ -64,8 +67,11 @@ export const ControlPanelToggle = (props) => {
     return (
       <BrandsRedactor
         brands={brands}
+        brandData={props.brandData}
         createBrandInput={props.createBrandInput}
         createBrand={props.createBrand}
+        isLoading={props.isLoading}
+        isCreating={props.isCreating}
       />
     );
   }
@@ -75,10 +81,15 @@ export const ControlPanelToggle = (props) => {
         brands={props.brands}
         models={models}
         brandsOnChange={props.brandsOnChange}
+        modelName={props.modelName}
+        modelYearFrom={props.modelYearFrom}
+        modelYearTo={props.modelYearTo}
         createModelInput={props.createModelInput}
         modelYearFromInput={props.modelYearFromInput}
         modelYearToInput={props.modelYearToInput}
         createModel={props.createModel}
+        isLoading={props.isLoading}
+        isCreating={props.isCreating}
       />
     );
   }
@@ -89,6 +100,10 @@ export const ControlPanelToggle = (props) => {
         models={props.models}
         years={props.years}
         items={items}
+        itemName={props.itemName}
+        itemDescription={props.itemDescription}
+        itemPrice={props.itemPrice}
+        itemArticle={props.itemArticle}
         brandsOnChange={props.brandsOnChange}
         modelsOnChange={props.modelsOnChange}
         yearsOnChange={props.yearsOnChange}
@@ -100,10 +115,15 @@ export const ControlPanelToggle = (props) => {
         createItem={props.createItem}
         itemDelete={props.itemDelete}
         itemsCount={props.itemsCount}
-        getItemsByBrand={props.getItemsByBrand}
+        getItems={props.getItems}
         currentPage={props.currentPage}
         currentModel={props.currentModel}
         currentYear={props.currentYear}
+        modalToggle={props.modalToggle}
+        itemModalClose={props.itemModalClose}
+        currentItem={props.currentItem}
+        isLoading={props.isLoading}
+        isCreating={props.isCreating}
       />
     );
   }

@@ -1,11 +1,8 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { HomePage } from './pages/HomePage/HomePage';
-import { BrandPage } from './pages/BrandPage/BrandPage';
-import { CatalogPage } from './pages/CatalogPage/CatalogPage';
 import { AdminPage } from './pages/adminPage/AdminPage';
-import { Header } from './components/Header/Header';
-import { Footer } from './components/Footer/Footer';
+import { AdminAuth } from './pages/adminPage/AdminAuth/AdminAuth';
 
 export const useRoutes = (isAuth) => {
   if (isAuth) {
@@ -15,7 +12,7 @@ export const useRoutes = (isAuth) => {
           <Route path={'/'} exact>
             <HomePage />
           </Route>
-          <Route path={'/admin'}>
+          <Route path={'/admin'} exact>
             <AdminPage />
           </Route>
           <Redirect to={'/'} />
@@ -25,6 +22,12 @@ export const useRoutes = (isAuth) => {
   }
   return (
     <Switch>
+      <Route path={'/'} exact>
+        <HomePage />
+      </Route>
+      <Route path={'/admin'} exact>
+        <AdminAuth />
+      </Route>
       <Redirect to={'/'} />
     </Switch>
   );

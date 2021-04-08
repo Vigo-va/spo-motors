@@ -3,33 +3,25 @@ import { Col, Image, Carousel, Button } from 'react-bootstrap';
 import bamper from '../../../bamper.jpg';
 
 export const Item = (props) => {
-  const images = props.images.map((img) => {
+  const images = props.images.map((img, i) => {
     return (
-      <Carousel.Item className={'itemImages'}>
+      <Carousel.Item key={i}>
         <Image className={'itemImages'} src={img} />
       </Carousel.Item>
     );
   });
   return (
     <Col md={4} sm={6} xs={12}>
-      <Col className={'item'}>
-        {props.isAdmin ? (
-          <button
-            className={'delete'}
-            value={props.id}
-            onClick={props.itemDelete}
-          >
-            <i className="fas fa-trash"></i>
-          </button>
-        ) : (
-          <></>
-        )}
-        <Carousel>{images}</Carousel>
+      <Col className={'item'} onClick={props.itemModalShow} id={props.id}>
+        <Carousel className={'itemCarousel'}>{images}</Carousel>
         <div className={'itemDescriptionBlock'}>
-          <p className={'itemTitle'}>{props.title}</p>
+          <p className={'itemTitle text-truncate'}>{props.title}</p>
           <p className={'itemDescription text-truncate'}>{props.description}</p>
-          <p className={'itemPrice'}>Цена: {props.price}</p>
+          <p className={'itemArticle text-truncate'}>
+            Категория: {props.brandName} | {props.modelName}
+          </p>
           <p className={'itemArticle'}>Артикул: #{props.article}</p>
+          <p className={'itemPrice'}>Цена: {props.price} руб.</p>
         </div>
       </Col>
     </Col>

@@ -1,8 +1,10 @@
 const { Router } = require('express');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
-
-const { Models, Brands, Items } = require('../models');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const { Models, Brands, Items, User } = require('../models');
 
 const router = Router();
 
@@ -106,8 +108,6 @@ router.post('/newModel', async (req, res) => {
     for (let i = yearFrom; i <= yearTo; i++) {
       years.push(i);
     }
-    // console.log(name, brandName, brandId, yearFrom, yearTo);
-    // res.status(201).json({ message: 'OK' });
 
     const model = new Models({ name, brand: brandId, years: years });
 
@@ -197,6 +197,8 @@ router.post('/newItem', async (req, res) => {
       price,
       article,
       year,
+      modelName,
+      brandName,
       modelId,
       brandId,
     } = req.body;
@@ -207,6 +209,8 @@ router.post('/newItem', async (req, res) => {
       price,
       article,
       year,
+      modelName,
+      brandName,
       model: modelId,
       brand: brandId,
     });
@@ -286,10 +290,10 @@ router.get('/itemsList:id', async (req, res) => {
 
 router.get('/items-list', async (req, res) => {
   try {
-    const { brandId, modelId, page, filter } = req.query;
+    const { page, filter } = req.query;
     const limitCount = 9;
     const skipCount = page * limitCount - limitCount;
-    console.log(brandId, page);
+
     if (filter === 'all') {
       const itemsCount = await Items.countDocuments({}, (err, count) => {
         if (err) {
@@ -314,6 +318,7 @@ router.get('/items-list', async (req, res) => {
       });
     }
     if (filter === 'brand') {
+      const { brandId } = req.query;
       const itemsCount = await Items.countDocuments(
         { brand: brandId },
         (err, count) => {
@@ -340,6 +345,7 @@ router.get('/items-list', async (req, res) => {
       });
     }
     if (filter === 'model') {
+      const { modelId } = req.query;
       const itemsCount = await Items.countDocuments(
         { model: modelId },
         (err, count) => {
@@ -389,6 +395,36 @@ router.post('/deleteItem', async (req, res) => {
     res.status(201).json({
       message: 'OK',
     });
+  } catch (e) {
+    res.status(500).json({
+      message: 'Something went wrong, try again!',
+    });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({
+        message: 'User not found!',
+      });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'Something went wrong, try again!',
+      });
+    }
+    const token = jwt.sign(
+      { username: user.username, userId: user.id },
+      config.get('jwtSecret'),
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ token, message: 'OK!' });
   } catch (e) {
     res.status(500).json({
       message: 'Something went wrong, try again!',

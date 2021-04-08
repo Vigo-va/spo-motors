@@ -19,7 +19,10 @@ export const Header = (props) => {
       >
         <Container>
           <LinkContainer to={'/'}>
-            <Navbar.Brand>LOGO</Navbar.Brand>
+            <Navbar.Brand>
+              {' '}
+              SPO<span className={'spo'}>Motors</span>
+            </Navbar.Brand>
           </LinkContainer>
 
           <Navbar.Toggle aria-controls={'responsive-navbar-nav'} />

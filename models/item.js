@@ -22,10 +22,17 @@ const schema = new Schema({
   url: {
     type: String,
   },
+  modelName: {
+    type: String,
+  },
+  brandName: {
+    type: String,
+  },
   model: {
     type: Types.ObjectId,
     ref: 'Models',
   },
+
   brand: {
     type: Types.ObjectId,
     ref: 'Brands',

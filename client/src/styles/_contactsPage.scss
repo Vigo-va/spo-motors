@@ -4,6 +4,12 @@
   background-color: $bgColor;
   padding: $freeSpace*2;
 
+  .contactsBlock {
+    @media(max-width: 767px) {
+      text-align: center;
+    }
+  }
+
   .form {
     input {
       color: #96999c;

@@ -9,20 +9,36 @@
 
   }
 }
-.brandsRedactor {
+.brandsRedactor, .modelRedactor, .itemsRedactor {
   margin: $freeSpace*2 0;
-  text-align: center;
+
+
+  .controlPanelTitle {
+    text-align: center;
+  }
 
   .brandsRedactorTitle {
     color: white;
     background-color: black;
   }
 
-  .brandsRedactorBtn {
-    color: white;
-    background-color: black;
-  }
+
 }
+
+.controlPanelBtn {
+  color: white;
+  background-color: black;
+  border: 1px solid black;
+  &:hover, &:active, &:focus {
+    background-color: black !important;
+    border: 1px solid black !important;
+    -webkit-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    -moz-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+  }
+
+}
+
 
 .brandsRedactorItem {
   margin: $freeSpace;
@@ -31,3 +47,48 @@
   border: 1px solid $borderColor;
   border-radius: 10px;
 }
+
+
+.loginForm {
+  margin: $freeSpace*2 auto;
+}
+
+.loginForm label {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.loginForm input {
+  font-size: 12px;
+  font-weight: 400;
+  border: none;
+  border-bottom: 2px solid $borderColor;
+  background-color: $bgColor;
+
+}
+
+.loginFormTitle {
+  text-align: center;
+  color: black;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+.loginButton, .loginButton:hover, .loginButton:active, .loginButton:focus, .loginButton:target {
+  color: #fff;
+  background-color: black;
+  border-style: none;
+}
+
+.registerButton, .registerButton:hover,.registerButton:active, .registerButton:focus, .registerButton:target {
+    color: black;
+  border: none;
+  outline: none;
+  text-decoration: none;
+}
+
+
+
+
+

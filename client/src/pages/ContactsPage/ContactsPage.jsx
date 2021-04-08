@@ -8,17 +8,15 @@ export const ContactsPage = (props) => {
         <Container>
           <Row>
             <Col md={6}>
-              <h1>Контакты</h1>
+              <div className={'contactsBlock'}>
+                <h1>Контакты</h1>
+                <p>Адрес: 117447 Москва, ул. Ебанная, д.10</p>
+                <p>Номер телефона: +7(999) 999-99-99</p>
+                <p>Email: ebanii@gmail.com</p>
+              </div>
             </Col>
             <Col md={{ span: 5, offset: 1 }}>
               <h1 className={'formTitle'}>форма обратной связи</h1>
-            </Col>
-            <Col md={6}>
-              <p>Адрес: 117447 Москва, ул. Ебанная, д.10</p>
-              <p>Номер телефона: +7(999) 999-99-99</p>
-              <p>Email: ebanii@gmail.com</p>
-            </Col>
-            <Col md={{ span: 5, offset: 1 }} className={'submitForm'}>
               <Form>
                 <Form.Group>
                   <Form.Label>Имя</Form.Label>
@@ -42,11 +40,10 @@ export const ContactsPage = (props) => {
                   type={'submit'}
                   block
                 >
-                  Submit
+                  Отправить
                 </Button>
               </Form>
             </Col>
-            <Col />
           </Row>
         </Container>
       </div>
