@@ -15,24 +15,49 @@ import { ItemModal } from '../../../components/ItemModal/ItemModal';
 import { Loader } from '../../../components/Loader/Loader';
 
 export const ItemRedactor = (props) => {
+  let data;
+  if (!props.displayMessage) {
+    data = props.items;
+  } else {
+    data = (
+      <Col className={'displayMessage'}>
+        <h4>{props.displayMessage}</h4>
+      </Col>
+    );
+  }
   return (
     <Row>
       <Col md={4} className={'itemsRedactor'}>
         <h4 className={'controlPanelTitle'}>Добавить Товар</h4>
+        <InputGroup className="mb-3">
+          <FormControl
+            type={'text'}
+            placeholder={'Поиск по артикулу'}
+            className={'mr-sm-2 searchInput'}
+            value={props.article}
+            onChange={props.onArticleChange}
+          />
+          <InputGroup.Append>
+            <Button variant={'searchBtn'} onClick={props.getItemByArticle}>
+              <i class="fas fa-search"></i>
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
         <Brand
           brands={props.brands}
-          brandsOnChange={props.brandsOnChange}
+          onBrandsChange={props.onBrandsChange}
           isLoading={props.isLoading}
+          currentBrand={props.currentBrand}
         />
         <Model
           models={props.models}
-          modelsOnChange={props.modelsOnChange}
+          onModelsChange={props.onModelsChange}
           currentModel={props.currentModel}
           isLoading={props.isLoading}
         />
         <Years
           years={props.years}
-          yearsOnChange={props.yearsOnChange}
+          onYearsChange={props.onYearsChange}
           currentYear={props.currentYear}
           isLoading={props.isLoading}
         />
@@ -48,8 +73,9 @@ export const ItemRedactor = (props) => {
           <FormControl
             aria-label={'Small'}
             aria-describedby={'inputGroup-sizing-sm'}
-            onChange={props.createItemNameInput}
-            value={props.itemName}
+            name={'name'}
+            onChange={props.itemChangeHandler}
+            value={props.itemData.name}
           />
         </InputGroup>
         <InputGroup size={'sm'} className={'mb-3'}>
@@ -59,8 +85,9 @@ export const ItemRedactor = (props) => {
           <FormControl
             as="textarea"
             aria-label="With textarea"
-            onChange={props.createItemDescriptionInput}
-            value={props.itemDescription}
+            name={'description'}
+            onChange={props.itemChangeHandler}
+            value={props.itemData.description}
           />
         </InputGroup>
         <InputGroup size={'sm'} className={'mb-3'}>
@@ -75,8 +102,9 @@ export const ItemRedactor = (props) => {
           <FormControl
             aria-label={'Small'}
             aria-describedby={'inputGroup-sizing-sm'}
-            onChange={props.createItemPriceInput}
-            value={props.itemPrice}
+            name={'price'}
+            onChange={props.itemChangeHandler}
+            value={props.itemData.price}
           />
         </InputGroup>
         <InputGroup size={'sm'} className={'mb-3'}>
@@ -91,8 +119,9 @@ export const ItemRedactor = (props) => {
           <FormControl
             aria-label={'Small'}
             aria-describedby={'inputGroup-sizing-sm'}
-            onChange={props.createItemArticleInput}
-            value={props.itemArticle}
+            name={'article'}
+            onChange={props.itemChangeHandler}
+            value={props.itemData.article}
           />
         </InputGroup>
         <form>
@@ -128,10 +157,10 @@ export const ItemRedactor = (props) => {
           getItems={props.getItems}
           currentPage={props.currentPage}
         />
-        <Row>{props.isLoading ? <Loader /> : props.items}</Row>
+        <Row>{props.isLoading ? <Loader class={'loader'} /> : data}</Row>
 
         <ItemModal
-          itemDelete={props.itemDelete}
+          deleteItem={props.deleteItem}
           show={props.modalToggle}
           onHide={props.itemModalClose}
           item={props.currentItem}

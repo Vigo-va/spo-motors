@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 import { AuthContext } from '../../../context/AuthContext';
 import axios from 'axios';
@@ -85,15 +85,15 @@ function LoginForm(props) {
 //       <Button className={'loginButton'} onClick={props.registerHandler} block>
 //         Register
 //       </Button>
-//       <Button
-//         variant={'link'}
-//         className={'registerButton'}
-//         onClick={props.authToggleHandler}
-//         disabled={props.loading}
-//         block
-//       >
-//         have an account? Login
-//       </Button>
+//       {/*<Button*/}
+//       {/*  variant={'link'}*/}
+//       {/*  className={'registerButton'}*/}
+//       {/*  onClick={props.authToggleHandler}*/}
+//       {/*  disabled={props.loading}*/}
+//       {/*  block*/}
+//       {/*>*/}
+//       {/*  have an account? Login*/}
+//       {/*</Button>*/}
 //     </Form>
 //   );
 // }
@@ -104,7 +104,7 @@ export const AdminAuth = () => {
     username: '',
     password: '',
   });
-  const [authToggle, setAuthToggle] = useState(true);
+  // const [authToggle, setAuthToggle] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   // const registerHandler = async () => {
@@ -114,14 +114,10 @@ export const AdminAuth = () => {
   //   } catch (e) {}
   // };
   const loginHandler = async () => {
-    try {
-      setIsLoading(true);
-      const data = await axios.post('/api/admin/login', { ...form });
-      auth.login(data.data.token);
-      setIsLoading(false);
-    } catch (e) {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    const data = await axios.post('/api/admin/login', { ...form });
+    auth.login(data.data.token);
+    setIsLoading(false);
   };
 
   // const clearForm = () => {
@@ -132,10 +128,10 @@ export const AdminAuth = () => {
   //   });
   // };
 
-  const changeHandler = (event) => {
+  const changeHandler = (e) => {
     setForm({
       ...form,
-      [event.currentTarget.name]: event.currentTarget.value,
+      [e.currentTarget.name]: e.currentTarget.value,
     });
   };
 
@@ -144,36 +140,37 @@ export const AdminAuth = () => {
   //   clearForm();
   // };
 
-  let authForm;
-  if (authToggle) {
-    authForm = (
-      <LoginForm
-        email={form.email}
-        password={form.password}
-        changeHandler={changeHandler}
-        // authToggleHandler={authToggleHandler}
-        loginHandler={loginHandler}
-        isLoading={isLoading}
-      />
-    );
-    // } else {
-    // authForm = (
-    //   <RegisterForm
-    //     email={form.email}
-    //     password={form.password}
-    //     changeHandler={changeHandler}
-    //     authToggleHandler={authToggleHandler}
-    //     registerHandler={registerHandler}
-    //   />
-    // );
-  }
+  // let authForm;
+  // if (authToggle) {
+  let authForm = (
+    <LoginForm
+      email={form.email}
+      password={form.password}
+      changeHandler={changeHandler}
+      // authToggleHandler={authToggleHandler}
+      loginHandler={loginHandler}
+      isLoading={isLoading}
+    />
+  );
+  // } else {
+  //   authForm = (
+  //     // <RegisterForm
+  //     //   email={form.email}
+  //     //   password={form.password}
+  //     //   changeHandler={changeHandler}
+  //     //   authToggleHandler={authToggleHandler}
+  //     //   registerHandler={registerHandler}
+  //     // />
+  //   );
+  // }
   return (
     <Row>
       <Col />
-      <Col md={5}>
+      <Col md={4}>
         <Card bg={'light'} className={'loginForm'}>
           <Card.Header className={'loginFormTitle'}>
-            {authToggle ? 'LOGIN' : 'REGISTER'}
+            {/*{authToggle ? 'LOGIN' : 'REGISTER'}*/}
+            LOGIN
           </Card.Header>
           <Card.Body>{authForm}</Card.Body>
         </Card>

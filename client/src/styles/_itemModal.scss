@@ -93,3 +93,41 @@
 
 }
 
+.modalMessageHeader {
+  padding: 5px 10px;
+  background-color: $bgColor ;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+}
+
+.modalMessageBody {
+  text-align: center;
+  .messageBlock {
+    height: 30px;
+  }
+}
+
+.modalMessageBtn {
+  padding: 5px 30px;
+  margin-top: 10px;
+  background-color: black;
+  color: white;
+  border: 1px solid black;
+  .disabled {
+    background-color: gray;
+
+  }
+  &:disabled {
+    background-color: gray;
+    color: white;
+    border: 1px solid gray !important;
+  }
+  &:hover, &:active, &:focus {
+    background-color: black !important;
+    border: 1px solid black !important;
+    -webkit-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    -moz-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+  }
+
+}

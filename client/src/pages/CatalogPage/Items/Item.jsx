@@ -1,6 +1,5 @@
 import React from 'react';
-import { Col, Image, Carousel, Button } from 'react-bootstrap';
-import bamper from '../../../bamper.jpg';
+import { Col, Image, Carousel } from 'react-bootstrap';
 
 export const Item = (props) => {
   const images = props.images.map((img, i) => {
@@ -18,7 +17,7 @@ export const Item = (props) => {
           <p className={'itemTitle text-truncate'}>{props.title}</p>
           <p className={'itemDescription text-truncate'}>{props.description}</p>
           <p className={'itemArticle text-truncate'}>
-            Категория: {props.brandName} | {props.modelName}
+            Категория: {props.brandName} | {props.modelName} | {props.year}
           </p>
           <p className={'itemArticle'}>Артикул: #{props.article}</p>
           <p className={'itemPrice'}>Цена: {props.price} руб.</p>

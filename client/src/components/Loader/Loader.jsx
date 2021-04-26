@@ -4,7 +4,7 @@ import { Spinner } from 'react-bootstrap';
 export const Loader = (props) => {
   return (
     <>
-      <Spinner animation="border" role="status" className={'loader'} />
+      <Spinner animation="border" role="status" className={props.class} />
     </>
   );
 };

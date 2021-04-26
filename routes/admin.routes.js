@@ -37,18 +37,19 @@ let upload = multer({
 });
 
 // brands
-router.get('/brandsList', async (req, res) => {
+router.get('/brands-list', async (req, res) => {
   try {
-    Brands.find({}, function (err, brands) {
+    const brands = await Brands.find({}, function (err, brands) {
       const brandMap = [];
 
       brands.forEach(function (brand) {
         brandMap.push(brand);
       });
-      res.status(201).json({
-        message: 'OK',
-        brandMap,
-      });
+      return brandMap;
+    });
+    res.status(200).json({
+      message: 'OK',
+      brands,
     });
   } catch (e) {
     res.status(500).json({
@@ -57,15 +58,19 @@ router.get('/brandsList', async (req, res) => {
   }
 });
 
-router.post('/newBrand', async (req, res) => {
+router.post('/create-brand', async (req, res) => {
   try {
     const { name } = req.body;
-
+    if (!name) {
+      return res.status(400).json({
+        message: 'Введите название бренда!',
+      });
+    }
     const brand = new Brands({ name });
     await brand.save();
 
     res.status(201).json({
-      message: 'OK',
+      message: 'Бренд успешно создан!',
       brand,
     });
   } catch (e) {
@@ -75,22 +80,20 @@ router.post('/newBrand', async (req, res) => {
   }
 });
 
-router.post('/deleteBrand', async (req, res) => {
+router.post('/delete-brand', async (req, res) => {
   try {
     const { id } = req.body;
 
     const brand = await Brands.findById(id);
 
     if (!brand) {
-      res.status(404).json({
-        message: 'Selects not found',
+      return res.status(404).json({
+        message: 'Марка не найдена!',
       });
     }
-
     await Brands.deleteOne(brand);
-    console.log(brand + 'deleted');
-    res.status(201).json({
-      message: 'OK',
+    res.status(200).json({
+      message: 'Марка успешно удалена!',
     });
   } catch (e) {
     res.status(500).json({
@@ -100,12 +103,12 @@ router.post('/deleteBrand', async (req, res) => {
 });
 
 //models
-router.post('/newModel', async (req, res) => {
+router.post('/create-model', async (req, res) => {
   try {
     const { name, brandId, yearFrom, yearTo } = req.body;
 
     const years = [];
-    for (let i = yearFrom; i <= yearTo; i++) {
+    for (let i = Number(yearFrom); i <= Number(yearTo); i++) {
       years.push(i);
     }
 
@@ -113,29 +116,13 @@ router.post('/newModel', async (req, res) => {
 
     await model.save((err) => {
       if (err) {
-        res.send(err);
+        return res.status(500).json({
+          message: 'Ошибка сервера попробуйте снова!',
+        });
       }
-      res.status(201).json({ message: 'OK', model });
-    });
-  } catch (e) {
-    res.status(500).json({
-      message: 'Something went wrong, try again!',
-    });
-  }
-});
-
-router.get('/modelsList:id', async (req, res) => {
-  try {
-    Models.find({ brand: req.params.id }, function (err, models) {
-      const modelMap = [];
-
-      models.forEach(function (model) {
-        modelMap.push(model);
-      });
-
       res.status(201).json({
-        message: 'OK',
-        modelMap,
+        message: 'Модель успешно создана!',
+        model,
       });
     });
   } catch (e) {
@@ -145,26 +132,7 @@ router.get('/modelsList:id', async (req, res) => {
   }
 });
 
-router.get('/modelYears:id', async (req, res) => {
-  try {
-    Models.findById(req.params.id, function (err, model) {
-      const modelYears = [];
-      model.years.forEach((year) => {
-        modelYears.push(year);
-      });
-      res.status(201).json({
-        message: 'OK',
-        modelYears,
-      });
-    });
-  } catch (e) {
-    res.status(500).json({
-      message: 'Something went wrong, try again!',
-    });
-  }
-});
-
-router.post('/deleteModel', async (req, res) => {
+router.post('/delete-model', async (req, res) => {
   try {
     const { id } = req.body;
 
@@ -172,14 +140,58 @@ router.post('/deleteModel', async (req, res) => {
 
     if (!model) {
       res.status(404).json({
-        message: 'Model not found',
+        message: 'Модель не найдена!',
       });
     }
 
     await Models.deleteOne(model);
     console.log(model + 'deleted');
-    res.status(201).json({
+    res.status(200).json({
+      message: 'Модель успешно удалена!',
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: 'Something went wrong, try again!',
+    });
+  }
+});
+
+router.get('/models-list:id', async (req, res) => {
+  try {
+    const models = await Models.find(
+      { brand: req.params.id },
+      (err, models) => {
+        const modelMap = [];
+
+        models.forEach(function (model) {
+          modelMap.push(model);
+        });
+        return modelMap;
+      }
+    );
+
+    res.status(200).json({
       message: 'OK',
+      models,
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: 'Something went wrong, try again!',
+    });
+  }
+});
+
+router.get('/model-years:id', async (req, res) => {
+  try {
+    const years = await Models.findById(req.params.id);
+    const modelYears = [];
+    years.years.forEach((year) => {
+      modelYears.push(year);
+    });
+
+    res.status(200).json({
+      message: 'OK',
+      modelYears,
     });
   } catch (e) {
     res.status(500).json({
@@ -189,7 +201,7 @@ router.post('/deleteModel', async (req, res) => {
 });
 
 // items
-router.post('/newItem', async (req, res) => {
+router.post('/create-item', async (req, res) => {
   try {
     const {
       name,
@@ -217,7 +229,7 @@ router.post('/newItem', async (req, res) => {
 
     await item.save();
     res.status(201).json({
-      message: 'OK',
+      message: 'Товар успешно создан!',
       item,
     });
   } catch (e) {
@@ -227,7 +239,7 @@ router.post('/newItem', async (req, res) => {
   }
 });
 
-router.post('/upload-img', upload.array('img', 6), async (req, res) => {
+router.post('/upload-img', upload.array('img', 3), async (req, res) => {
   try {
     const { id } = req.body;
     const reqFiles = [];
@@ -244,7 +256,7 @@ router.post('/upload-img', upload.array('img', 6), async (req, res) => {
     });
     item.save();
     res.status(201).json({
-      message: 'OK',
+      message: 'Товар успешно создан!',
       item,
     });
   } catch (e) {
@@ -254,7 +266,7 @@ router.post('/upload-img', upload.array('img', 6), async (req, res) => {
   }
 });
 
-router.get('/itemsList:id', async (req, res) => {
+router.get('/items-list:id', async (req, res) => {
   try {
     const itemsCount = await Items.countDocuments(
       { brand: req.params.id },
@@ -276,7 +288,7 @@ router.get('/itemsList:id', async (req, res) => {
         return itemsMap;
       }
     ).limit(9);
-    res.status(201).json({
+    res.status(200).json({
       message: 'OK',
       items,
       itemsCount,
@@ -284,6 +296,26 @@ router.get('/itemsList:id', async (req, res) => {
   } catch (e) {
     res.status(500).json({
       message: 'Something went wrong, try again!',
+    });
+  }
+});
+
+router.get('/get-item', async (req, res) => {
+  const { article } = req.query;
+  const items = [];
+  const item = await Items.findOne({ article });
+  console.log(item);
+  if (item === null) {
+    return res.status(500).json({
+      status: false,
+      message: 'Товар не найден!',
+    });
+  } else {
+    items.push(item);
+    return res.status(200).json({
+      status: true,
+      message: 'OK!',
+      items,
     });
   }
 });
@@ -311,7 +343,7 @@ router.get('/items-list', async (req, res) => {
       })
         .limit(9)
         .skip(skipCount);
-      res.status(201).json({
+      return res.status(200).json({
         message: 'OK',
         items,
         itemsCount,
@@ -338,7 +370,7 @@ router.get('/items-list', async (req, res) => {
       })
         .limit(9)
         .skip(skipCount);
-      res.status(201).json({
+      return res.status(200).json({
         message: 'OK',
         items,
         itemsCount,
@@ -365,7 +397,7 @@ router.get('/items-list', async (req, res) => {
       })
         .limit(9)
         .skip(skipCount);
-      res.status(201).json({
+      return res.status(200).json({
         message: 'OK',
         items,
         itemsCount,
@@ -378,22 +410,22 @@ router.get('/items-list', async (req, res) => {
   }
 });
 
-router.post('/deleteItem', async (req, res) => {
+router.post('/delete-item', async (req, res) => {
   try {
     const { id } = req.body;
     console.log(id);
     const item = await Items.findById(id);
 
     if (!item) {
-      res.status(404).json({
-        message: 'Item not found',
+      return res.status(404).json({
+        message: 'Товар не найден!',
       });
     }
 
     await Items.deleteOne(item);
     console.log(item + 'deleted');
-    res.status(201).json({
-      message: 'OK',
+    res.status(200).json({
+      message: 'Товар успешно удален!',
     });
   } catch (e) {
     res.status(500).json({

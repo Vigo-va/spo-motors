@@ -31,7 +31,7 @@ export const Years = (props) => {
         options={yearsOptions}
         value={defaultValue}
         isDisabled={props.isLoading}
-        onChange={props.yearsOnChange}
+        onChange={props.onYearsChange}
         placeholder={'Выберите год'}
         theme={(theme) => ({
           ...theme,

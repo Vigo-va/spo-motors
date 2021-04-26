@@ -23,7 +23,7 @@ export const ItemModal = (props) => {
           <button
             className={'delete'}
             value={props.item.id}
-            onClick={props.itemDelete}
+            onClick={props.deleteItem}
           >
             <i className="fas fa-trash"></i>
           </button>
@@ -83,6 +83,17 @@ export const ItemModal = (props) => {
               </Col>
               <Col xs={4} className={'itemDescValues'}>
                 {props.item.modelName}
+              </Col>
+              <Col
+                md={{ span: 5, offset: 1 }}
+                xs={{ span: 5, offset: 2 }}
+                className={'itemDesc'}
+              >
+                Год:
+                <span className={'line'} />
+              </Col>
+              <Col xs={4} className={'itemDescValues'}>
+                {props.item.year}
               </Col>
               <Col
                 md={{ span: 5, offset: 1 }}

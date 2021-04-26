@@ -31,3 +31,34 @@ body {
   right:50%;
   top: 50%;
 }
+
+.displayMessage {
+  margin-top: $freeSpace*2;
+  text-align: center;
+}
+
+.btn-searchBtn {
+  color: white;
+  background-color: black;
+  border: 1px solid black !important;
+  &:hover,  &:active,  &:focus,  &:target {
+    color: white !important;
+    background-color: black !important;
+    outline: none !important;
+    border: 1px solid black !important;
+    -webkit-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    -moz-box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+    box-shadow: 0 0 5px 0 rgba(138,138,138,1) !important;
+  }
+}
+
+.searchInput {
+  margin-right: 0 !important;
+  border: 1px solid $borderColor !important;
+  box-shadow: none;
+  &:hover,  &:active,  &:focus,  &:target {
+    outline: none !important;
+    border: 1px solid $borderColor !important;
+    box-shadow: none !important;
+  }
+}

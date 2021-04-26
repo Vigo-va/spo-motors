@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Col,
-  FormControl,
-  InputGroup,
-  Row,
-  Spinner,
-} from 'react-bootstrap';
+import { Button, Col, FormControl, InputGroup, Row } from 'react-bootstrap';
 import { Loader } from '../../../components/Loader/Loader';
 
 export const BrandsRedactor = (props) => {
@@ -26,32 +19,24 @@ export const BrandsRedactor = (props) => {
           <FormControl
             aria-label={'Small'}
             aria-describedby={'inputGroup-sizing-sm'}
+            name={'name'}
             value={props.brandData.name}
-            onChange={props.createBrandInput}
+            onChange={props.brandChangeHandler}
           />
         </InputGroup>
         <Button
           className={'controlPanelBtn'}
           onClick={props.createBrand}
-          disabled={props.isCreating}
+          disabled={props.isLoading}
           block
         >
-          {props.isCreating ? (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : (
-            ''
-          )}
           Создать
         </Button>
       </Col>
       <Col md={8}>
-        <Row>{props.isLoading ? <Loader /> : props.brands}</Row>
+        <Row>
+          {props.isLoading ? <Loader class={'loader'} /> : props.brands}
+        </Row>
       </Col>
     </Row>
   );

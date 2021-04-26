@@ -8,7 +8,7 @@ export const Footer = (props) => {
         <footer className={'footer'}>
           <Container>
             <Row>
-              <Col>© {new Date().getFullYear()} (c) pizdec naxuy</Col>
+              <Col>© {new Date().getFullYear()} (c) SPOMotors</Col>
             </Row>
           </Container>
         </footer>

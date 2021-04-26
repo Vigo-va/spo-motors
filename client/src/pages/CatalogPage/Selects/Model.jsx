@@ -37,7 +37,7 @@ export const Model = (props) => {
         options={modelOptions}
         value={defaultValue}
         isDisabled={props.isLoading}
-        onChange={props.modelsOnChange}
+        onChange={props.onModelsChange}
         placeholder={'Выберите модель'}
         theme={(theme) => ({
           ...theme,

@@ -75,17 +75,28 @@
 }
 
 
-.loginButton, .loginButton:hover, .loginButton:active, .loginButton:focus, .loginButton:target {
+.loginButton {
   color: #fff;
   background-color: black;
   border-style: none;
+  &:hover,  &:active,  &:focus,  &:target {
+    color: #fff;
+    background-color: black;
+    border-style: none;
+  }
 }
 
-.registerButton, .registerButton:hover,.registerButton:active, .registerButton:focus, .registerButton:target {
+.registerButton {
     color: black;
   border: none;
   outline: none;
   text-decoration: none;
+  &:hover,  &:active,  &:focus,  &:target {
+    color: black;
+    border: none;
+    outline: none;
+    text-decoration: none;
+  }
 }
 
 

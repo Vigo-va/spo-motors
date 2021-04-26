@@ -4,7 +4,7 @@ const config = require('config');
 const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { admin } = require('./routes');
+const { admin, contacts } = require('./routes');
 
 const app = express();
 
@@ -20,6 +20,7 @@ app.use('/public', express.static('public'));
 app.use(express.json());
 
 app.use('/api/admin', admin);
+app.use('/api/contacts', contacts);
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client', 'build')));

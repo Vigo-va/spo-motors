@@ -19,13 +19,24 @@ export const Brand = (props) => {
     value: brand.name,
     id: brand._id,
   }));
+  let defaultValue;
+  if (props.currentBrand !== null) {
+    defaultValue = {
+      label: props.currentBrand.name,
+      value: props.currentBrand.name,
+      id: props.currentBrand.id,
+    };
+  } else {
+    defaultValue = null;
+  }
   return (
     <div className={'selects'}>
       <Select
         styles={customStyles}
         options={brandOptions}
+        value={defaultValue}
         isDisabled={props.isLoading}
-        onChange={props.brandsOnChange}
+        onChange={props.onBrandsChange}
         placeholder={'Выберите марку'}
         theme={(theme) => ({
           ...theme,

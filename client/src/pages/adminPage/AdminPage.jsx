@@ -1,299 +1,415 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { ControlPanelToggle } from './ControlPanel/ControlPanelToggle';
+import { ModalMessage } from '../../components/Modal/ModalMessage';
 
 const axios = require('axios').default;
 
 export const AdminPage = () => {
+  // GET DATA
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [years, setYears] = useState([]);
   const [items, setItems] = useState([]);
-  const [filter, setFilter] = useState('all');
 
-  const [currentBrand, setCurrentBrand] = useState({});
-  const [currentModel, setCurrentModel] = useState(null);
-  const [currentYear, setCurrentYear] = useState(null);
-  const [currentItem, setCurrentItem] = useState({ img: [] });
+  // POST DATA
+  const [brandData, setBrandData] = useState({
+    name: '',
+  });
 
-  const [newBrandData, setNewBrandData] = useState({ name: '' });
+  const [modelData, setModelData] = useState({
+    name: '',
+    yearFrom: '',
+    yearTo: '',
+    brandName: '',
+    brandId: '',
+  });
 
-  const [modelName, setModelName] = useState('');
-  const [modelYearFrom, setModelYearFrom] = useState('');
-  const [modelYearTo, setModelYearTo] = useState('');
-
-  const [itemName, setItemName] = useState('');
-  const [itemDescription, setItemDescription] = useState('');
-  const [itemPrice, setItemPrice] = useState('');
-  const [itemArticle, setItemArticle] = useState('');
+  const [itemData, setItemData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    article: '',
+    year: '',
+    modelName: '',
+    brandName: '',
+    modelId: '',
+    brandId: '',
+  });
   const [itemFiles, setItemFiles] = useState({
     img: '',
   });
 
+  // Current Data
+  const [currentBrand, setCurrentBrand] = useState(null);
+  const [currentModel, setCurrentModel] = useState(null);
+  const [currentYear, setCurrentYear] = useState(null);
+  const [currentItem, setCurrentItem] = useState({ img: [] });
+
+  //Pagination, Filter, Search
+  const [filter, setFilter] = useState('all');
   const [itemsCount, setItemsCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [article, setArticle] = useState('');
 
+  // Messages
+  const [displayMessage, setDisplayMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const [messageModalShow, setMessageModalShow] = useState(false);
+
+  // toggles
   const [controlPanelToggle, setControlPanelToggle] = useState('');
   const [modalToggle, setModalToggle] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
-  const createBrandInput = (e) => {
-    return setNewBrandData({ name: e.target.value });
-  };
-
-  const clearBrandInput = () => {
-    return setNewBrandData({ name: '' });
-  };
-
-  const createModelInput = (e) => {
-    return setModelName(e.target.value);
-  };
-  const modelYearFromInput = (e) => {
-    return setModelYearFrom(e.target.value);
-  };
-  const modelYearToInput = (e) => {
-    return setModelYearTo(e.target.value);
+  // Brand
+  const brandChangeHandler = (event) => {
+    return setBrandData({
+      ...brandData,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
   };
 
-  const clearModelInput = () => {
-    setModelName('');
-    setModelYearFrom('');
-    setModelYearTo('');
-  };
-
-  const clearItemsInput = () => {
-    setItemName('');
-    setItemDescription('');
-    setItemPrice('');
-    setItemArticle('');
-  };
-
-  const createItemNameInput = (e) => {
-    return setItemName(e.target.value);
-  };
-  const createItemDescriptionInput = (e) => {
-    return setItemDescription(e.target.value);
-  };
-  const createItemPriceInput = (e) => {
-    return setItemPrice(e.target.value);
-  };
-  const createItemArticleInput = (e) => {
-    return setItemArticle(e.target.value);
+  const brandDataClear = () => {
+    return setBrandData({
+      ...brandData,
+      name: '',
+    });
   };
 
   const createBrand = async () => {
-    await setIsCreating(true);
-    const data = await axios.post('/api/admin/newBrand', newBrandData);
-    setBrands([...brands, data.data.brand]);
-    setIsCreating(false);
-    clearBrandInput();
-  };
-  const createModel = async () => {
-    setIsCreating(true);
-    const newModelData = {
-      name: modelName,
-      yearFrom: +modelYearFrom,
-      yearTo: +modelYearTo,
-      brandName: currentBrand.name,
-      brandId: currentBrand.id,
-    };
-    const data = await axios.post('/api/admin/newModel', newModelData);
-    setModels([...models, data.data.model]);
-    setIsCreating(false);
-    clearModelInput();
-  };
-  const createItem = async () => {
-    setIsCreating(true);
-    const formData = new FormData();
-
-    for (const key of Object.keys(itemFiles.img)) {
-      formData.append('img', itemFiles.img[key]);
+    try {
+      setIsLoading(true);
+      setMessageModalShow(true);
+      const response = await axios.post('/api/admin/create-brand', brandData);
+      setBrands([response.data.brand, ...brands]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+      brandDataClear();
+    } catch (error) {
+      setMessage(error.response.data.message);
+      setIsLoading(false);
     }
-    const newItemData = {
-      name: itemName,
-      description: itemDescription,
-      price: itemPrice,
-      article: itemArticle,
-      year: currentYear,
-      modelName: currentModel.name,
-      brandName: currentBrand.name,
-      modelId: currentModel.id,
-      brandId: currentBrand.id,
-    };
-    const item = await axios.post('/api/admin/newItem', newItemData);
-    formData.append('id', item.data.item._id);
-    const data = await axios.post('/api/admin/upload-img', formData);
-    setItems([data.data.item, ...items]);
-    setIsCreating(false);
-    clearItemsInput();
   };
 
-  const deleteBrand = (e) => {
-    console.log('deleting');
-    axios
-      .post('/api/admin/deleteBrand', { id: e.target.value })
-      .then((response) => {
-        setBrands([...brands.filter((item) => item._id !== e.target.value)]);
-        console.log(brands);
-      });
+  const deleteBrand = async (event) => {
+    try {
+      setIsLoading(true);
+      setMessageModalShow(true);
+      const id = event.currentTarget.value;
+      const response = await axios.post('/api/admin/delete-brand', { id });
+      setBrands([...brands.filter((item) => item._id !== id)]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+    } catch (error) {
+      setMessage(error.response.data.message);
+      setIsLoading(false);
+    }
   };
-  const deleteModel = (e) => {
-    console.log('deleting');
-    axios
-      .post('/api/admin/deleteModel', { id: e.target.value })
-      .then((response) => {
-        setModels([...models.filter((item) => item._id !== e.target.value)]);
-        console.log(models);
-      });
+
+  const onBrandsChange = async (event) => {
+    try {
+      setIsLoading(true);
+      setCurrentBrand({ name: event.value, id: event.id });
+      setModelData({ ...modelData, brandName: event.value, brandId: event.id });
+      setItemData({ ...itemData, brandName: event.value, brandId: event.id });
+      setDisplayMessage('');
+      setArticle('');
+      setFilter('brand');
+
+      const items = await axios.get(`/api/admin/items-list${event.id}`);
+      setItems(items.data.items);
+      setItemsCount(items.data.itemsCount);
+
+      const models = await axios.get(`/api/admin/models-list${event.id}`);
+      setModels(models.data.models);
+      setCurrentYear(null);
+      setCurrentModel(null);
+      setIsLoading(false);
+    } catch (error) {
+      // setMessage(error.models.data.message);
+      setIsLoading(false);
+    }
   };
-  const itemDelete = (e) => {
-    console.log('deleting');
-    const id = e.currentTarget.value;
-    axios.post('/api/admin/deleteItem', { id: id }).then((response) => {
-      setItems([...items.filter((item) => item._id !== id)]);
-      setModalToggle(false);
+
+  // Model
+  const modelChangeHandler = (event) => {
+    return setModelData({
+      ...modelData,
+      [event.currentTarget.name]: event.currentTarget.value,
     });
   };
 
-  const brandsOnChange = async (e) => {
-    setIsLoading(true);
-    setCurrentBrand({ name: e.value, id: e.id });
-    setFilter('brand');
-
-    const items = await axios.get(`/api/admin/itemsList${e.id}`);
-    setItems(items.data.items);
-    setItemsCount(items.data.itemsCount);
-
-    const models = await axios.get(`/api/admin/modelsList${e.id}`);
-    setModels(models.data.modelMap);
-    setCurrentYear(null);
-    setCurrentModel(null);
-    setIsLoading(false);
-  };
-  const modelsOnChange = async (e) => {
-    setIsLoading(true);
-    setCurrentModel({ name: e.value, id: e.id });
-    setFilter('model');
-    setCurrentPage(1);
-    const items = await axios.get('/api/admin/items-list', {
-      params: {
-        brandId: currentBrand.id,
-        modelId: e.id,
-        filter: 'model',
-        page: 1,
-      },
+  const modelDataClear = () => {
+    setCurrentBrand(null);
+    return setModelData({
+      ...modelData,
+      name: '',
+      yearFrom: '',
+      yearTo: '',
+      brandName: '',
+      brandId: '',
     });
-
-    setItems(items.data.items);
-    setItemsCount(items.data.itemsCount);
-
-    const years = await axios.get(`/api/admin/modelYears${e.id}`);
-    setYears(years.data.modelYears);
-    setCurrentYear(null);
-    setIsLoading(false);
-  };
-  const yearsOnChange = (e) => {
-    setCurrentYear(e.value);
   };
 
-  const changeControlPanelToggle = (e) => {
-    setIsLoadingBtn(true);
-    console.log(e.target.value);
-    setControlPanelToggle(e.target.value);
-    setIsLoadingBtn(false);
+  const createModel = async () => {
+    try {
+      setIsLoading(true);
+      setMessageModalShow(true);
+      const response = await axios.post('/api/admin/create-model', modelData);
+      setModels([response.data.model, ...models]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+      modelDataClear();
+    } catch (error) {
+      setMessage(error.response.data.message);
+      setIsLoading(false);
+    }
   };
-  const itemModalShow = (e) => {
-    let id = e.currentTarget.id;
-    let filtered = items.filter((item) => item._id === id);
-    filtered.map((item) => {
-      setCurrentItem({
-        id: item._id,
-        name: item.name,
-        img: item.img,
-        description: item.description,
-        price: item.price,
-        article: item.article,
-        brandName: item.brandName,
-        modelName: item.modelName,
+
+  const deleteModel = async (event) => {
+    try {
+      setIsLoading(true);
+      setMessageModalShow(true);
+      const id = event.currentTarget.value;
+      const response = await axios.post('/api/admin/delete-model', { id });
+      setModels([...models.filter((item) => item._id !== id)]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+    } catch (error) {
+      setMessage(error.response.data.message);
+      setIsLoading(false);
+    }
+  };
+
+  const onModelsChange = async (event) => {
+    try {
+      setIsLoading(true);
+      setCurrentModel({ name: event.value, id: event.id });
+      setItemData({ ...itemData, modelName: event.value, modelId: event.id });
+      setDisplayMessage('');
+      setArticle('');
+      setFilter('model');
+      setCurrentPage(1);
+      const items = await axios.get('/api/admin/items-list', {
+        params: {
+          brandId: currentBrand.id,
+          modelId: event.id,
+          filter: 'model',
+          page: 1,
+        },
       });
-    });
-    console.log(filtered);
-    setModalToggle(true);
+      setItems(items.data.items);
+      setItemsCount(items.data.itemsCount);
+
+      const years = await axios.get(`/api/admin/model-years${event.id}`);
+      setYears(years.data.modelYears);
+      setCurrentYear(null);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
-  const itemModalClose = () => {
-    setModalToggle(false);
+
+  // Year
+  const onYearsChange = (event) => {
+    setCurrentYear(event.value);
+    setDisplayMessage('');
+    setArticle('');
+    return setItemData({ ...itemData, year: event.value });
+  };
+
+  // Item
+  const itemChangeHandler = (event) => {
+    return setItemData({
+      ...itemData,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
   };
 
   const onFileChange = (e) => {
     return setItemFiles({ img: e.target.files });
   };
 
-  const getItems = async (e) => {
-    setIsLoading(true);
-    let selectedPage = +e.selected + 1;
-    setCurrentPage(selectedPage);
-    if (filter === 'all') {
-      const items = await axios.get('/api/admin/items-list', {
-        params: {
-          filter: filter,
-          page: Number(selectedPage),
-        },
-      });
+  const itemDataClear = () => {
+    setCurrentBrand(null);
+    setCurrentModel(null);
+    setCurrentYear(null);
 
-      setItems(items.data.items);
+    setItemData({
+      ...itemData,
+      name: '',
+      description: '',
+      price: '',
+      article: '',
+      year: '',
+      modelName: '',
+      brandName: '',
+      modelId: '',
+      brandId: '',
+    });
+  };
+
+  const createItem = async () => {
+    try {
+      setIsLoading(true);
+      setMessageModalShow(true);
+      const item = await axios.post('/api/admin/create-item', itemData);
+      const formData = new FormData();
+      for (const key of Object.keys(itemFiles.img)) {
+        formData.append('img', itemFiles.img[key]);
+      }
+      formData.append('id', item.data.item._id);
+      const response = await axios.post('/api/admin/upload-img', formData);
+      setItems([response.data.item, ...items]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+      itemDataClear();
+    } catch (error) {
       setIsLoading(false);
     }
-    if (filter === 'brand') {
-      const items = await axios.get('/api/admin/items-list', {
-        params: {
-          brandId: currentBrand.id,
-          filter: filter,
-          page: Number(selectedPage),
-        },
-      });
+  };
 
-      setItems(items.data.items);
+  const deleteItem = async (event) => {
+    try {
+      setIsLoading(true);
+      setModalToggle(false);
+      setMessageModalShow(true);
+      const id = event.currentTarget.value;
+      const response = await axios.post('/api/admin/delete-item', { id });
+      setItems([...items.filter((item) => item._id !== id)]);
+      setMessage(response.data.message);
+      setIsLoading(false);
+    } catch (error) {
+      setMessage(error.response.data.message);
       setIsLoading(false);
     }
-    if (filter === 'model') {
-      const items = await axios.get('/api/admin/items-list', {
-        params: {
-          brandId: currentBrand.id,
-          modelId: currentModel.id,
-          filter: filter,
-          page: Number(selectedPage),
-        },
-      });
+  };
+  // Modals
+  const messageModalOnHide = () => {
+    setMessageModalShow(false);
+    setMessage('');
+  };
 
-      setItems(items.data.items);
+  const itemModalShow = (event) => {
+    const id = event.currentTarget.id;
+    const filtered = items.filter((item) => item._id === id);
+    filtered.map((item) => {
+      return setCurrentItem({
+        id: item._id,
+        name: item.name,
+        img: item.img,
+        description: item.description,
+        year: item.year,
+        price: item.price,
+        article: item.article,
+        brandName: item.brandName,
+        modelName: item.modelName,
+      });
+    });
+    setModalToggle(true);
+  };
+
+  const itemModalClose = () => {
+    setModalToggle(false);
+  };
+
+  // toggles
+  const changeControlPanelToggle = (event) => {
+    setIsLoadingBtn(true);
+    console.log(event.target.value);
+    setControlPanelToggle(event.target.value);
+    setIsLoadingBtn(false);
+  };
+
+  // Get data
+  const onArticleChange = (event) => {
+    setArticle(event.currentTarget.value);
+  };
+
+  const getItemByArticle = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/admin/get-item`, {
+        params: { article },
+      });
+      console.log(response.data.message);
+      setItems(response.data.items);
+      setDisplayMessage('');
+      setIsLoading(false);
+    } catch (error) {
+      setDisplayMessage(error.response.data.message);
+      console.log(error.response.data.message);
       setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  const getItems = async (event) => {
+    try {
+      setIsLoading(true);
+      let selectedPage = +event.selected + 1;
+      setCurrentPage(selectedPage);
+      if (filter === 'all') {
+        const items = await axios.get('/api/admin/items-list', {
+          params: {
+            filter: filter,
+            page: Number(selectedPage),
+          },
+        });
+        console.log(items.data.items);
+
+        setItems(items.data.items);
+        setIsLoading(false);
+      }
+      if (filter === 'brand') {
+        const items = await axios.get('/api/admin/items-list', {
+          params: {
+            brandId: currentBrand.id,
+            filter: filter,
+            page: Number(selectedPage),
+          },
+        });
+        console.log(items.data.items);
+
+        setItems(items.data.items);
+        setIsLoading(false);
+      }
+      if (filter === 'model') {
+        const items = await axios.get('/api/admin/items-list', {
+          params: {
+            brandId: currentBrand.id,
+            modelId: currentModel.id,
+            filter: filter,
+            page: Number(selectedPage),
+          },
+        });
+        console.log(items.data.items);
+        setItems(items.data.items);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setDisplayMessage('Товары не найдены!');
+      setIsLoading(false);
+    }
   };
 
   const getData = useCallback(() => {
     axios
-      .all([
-        axios.get('/api/admin/items-list', {
-          params: {
-            filter: 'all',
-            page: 1,
-          },
-        }),
-
-        axios.get('/api/admin/brandsList'),
-      ])
-      .then(
-        axios.spread((response1, response2) => {
-          console.log(response1);
-          setItems(response1.data.items);
-          setItemsCount(response1.data.itemsCount);
-          setBrands(response2.data.brandMap);
-          console.log(response2);
-        })
-      );
+      .get('/api/admin/items-list', {
+        params: {
+          filter: 'all',
+          page: 1,
+        },
+      })
+      .then((response) => {
+        setItems(response.data.items);
+        setItemsCount(response.data.itemsCount);
+      });
+    axios.get('/api/admin/brands-list').then((response) => {
+      setBrands(response.data.brands);
+      console.log(response);
+    });
   }, []);
 
   useEffect(() => {
@@ -369,49 +485,59 @@ export const AdminPage = () => {
           </Col>
           <Col>
             <ControlPanelToggle
+              // Data
               brands={brands}
               models={models}
               years={years}
               items={items}
+              // Toggles
               toggle={controlPanelToggle}
-              brandData={newBrandData}
-              modelName={modelName}
-              modelYearFrom={modelYearFrom}
-              modelYearTo={modelYearTo}
-              itemName={itemName}
-              itemDescription={itemDescription}
-              itemPrice={itemPrice}
-              itemArticle={itemArticle}
-              currentBrandName={currentBrand.name}
-              createBrandInput={createBrandInput}
-              createModelInput={createModelInput}
-              modelYearFromInput={modelYearFromInput}
-              modelYearToInput={modelYearToInput}
-              createItemNameInput={createItemNameInput}
-              createItemDescriptionInput={createItemDescriptionInput}
-              createItemPriceInput={createItemPriceInput}
-              createItemArticleInput={createItemArticleInput}
+              // Brand
+              brandData={brandData}
+              currentBrand={currentBrand}
+              brandChangeHandler={brandChangeHandler}
+              onBrandsChange={onBrandsChange}
               createBrand={createBrand}
               deleteBrand={deleteBrand}
+              // Model
+              modelData={modelData}
+              currentModel={currentModel}
+              modelChangeHandler={modelChangeHandler}
+              onModelsChange={onModelsChange}
               createModel={createModel}
               deleteModel={deleteModel}
-              createItem={createItem}
-              itemDelete={itemDelete}
-              brandsOnChange={brandsOnChange}
-              modelsOnChange={modelsOnChange}
-              yearsOnChange={yearsOnChange}
-              onFileChange={onFileChange}
-              itemsCount={itemsCount}
-              getItems={getItems}
-              currentPage={currentPage}
-              currentModel={currentModel}
+              // years
+              onYearsChange={onYearsChange}
               currentYear={currentYear}
-              itemModalShow={itemModalShow}
-              modalToggle={modalToggle}
-              itemModalClose={itemModalClose}
+              // Item
+              itemData={itemData}
               currentItem={currentItem}
+              itemChangeHandler={itemChangeHandler}
+              onFileChange={onFileChange}
+              createItem={createItem}
+              deleteItem={deleteItem}
+              // Pagination
+              itemsCount={itemsCount}
+              currentPage={currentPage}
+              // Get data
+              getItems={getItems}
+              article={article}
+              onArticleChange={onArticleChange}
+              getItemByArticle={getItemByArticle}
+              // Modal
+              modalToggle={modalToggle}
+              itemModalShow={itemModalShow}
+              itemModalClose={itemModalClose}
+              // toggle
               isLoading={isLoading}
-              isCreating={isCreating}
+              // Message
+              displayMessage={displayMessage}
+            />
+            <ModalMessage
+              show={messageModalShow}
+              isLoading={isLoading}
+              message={message}
+              onHide={messageModalOnHide}
             />
           </Col>
         </Row>
